@@ -1,0 +1,33 @@
+# 项目端口以及运行模式
+server:
+  address: 9501
+  model: debug # debug/release
+
+# 数据库配置
+database:
+  dialects: mysql
+  host: 127.0.0.1
+  port: 3306
+  db: easy
+  username: root
+  password: Xx123456
+  charset: utf8
+  maxIdle: 50 # 最大空闲
+  maxOpen: 150 # 最大连接
+
+# redis配置
+redis:
+  address: 127.0.0.1:6379
+  password:
+  db: 0
+
+# 文件上传配置
+fileSettings:
+  uploadDir: /easy-go-admin/upload/
+  host: http://localhost:9501
+
+# log日志配置
+log:
+  path: ./log
+  name: sys
+  model: console # console/file
