@@ -17,6 +17,8 @@ func CreateHttpHandler() *gin.Engine {
 	root.Use(middleware.LoggerMiddleware())
 	root.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	base := root.Group("/")
+	// 静态资源路由
+	base.Static("/public", "./public")
 	// 全局路由
 	routerModule.SetupCommonRouter(base)
 	return root

@@ -39,9 +39,9 @@ func init() {
 	Code.Message = map[uint]string{
 		Code.SUCCESS:              "成功",
 		Code.FAILURE:              "失败",
-		Code.NOAUTH:               "header 中未包含 token",
-		Code.AUTHFORMMATER:        "token 格式不正确",
-		Code.INVALIDTOKEN:         "无效的 token 或登陆过期，请重新登陆",
+		Code.NOAUTH:               "header中未包含token",
+		Code.AUTHFORMMATER:        "token格式不正确",
+		Code.INVALIDTOKEN:         "无效的token或登陆过期，请重新登陆",
 		Code.PASSWORDNOTTRUE:      "密码不正确",
 		Code.STATUSISENABLE:       "用户状态被禁用",
 		Code.BADREQUEST:           "请求参数有误",

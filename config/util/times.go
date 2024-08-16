@@ -27,25 +27,30 @@ func (t Htime) MarshalJSON() ([]byte, error) {
 // 根据指定格式解析字符串并设置到 Htime 中
 func (t *Htime) UnmarshalJSON(b []byte) (err error) {
 	now, err := time.ParseInLocation(`"`+formatTime+`"`, string(b), time.Local)
+	if err != nil {
+		return err
+	}
 	*t = Htime{now}
 	return
 }
 
-// value 方法用于将 Htime 类型转换为数据库驱动值
-func (t Htime) value() (driver.Value, error) {
+// Value 方法用于将 Htime 类型转换为数据库驱动值
+func (t Htime) Value() (driver.Value, error) {
 	var zeroTime time.Time
 	if t.Time.UnixNano() == zeroTime.UnixNano() {
 		return nil, nil
 	}
-	return t.Time, nil
+	return t.Time.Format(formatTime), nil
 }
 
 // Scan 方法用于从数据库数据中扫描并设置到 Htime 类型
 func (t *Htime) Scan(v interface{}) error {
 	value, ok := v.(time.Time)
-	if ok {
-		*t = Htime{value}
-		return nil
+	if !ok {
+		return fmt.Errorf("can not convert %v to timestamp", v)
 	}
-	return fmt.Errorf("can not convert %v to timestamp", v)
+	// 确保从数据库读取的时间只包含秒级精度
+	value = value.Truncate(time.Second)
+	*t = Htime{value}
+	return nil
 }

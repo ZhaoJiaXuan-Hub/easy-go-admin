@@ -2,5 +2,5 @@ package constant
 
 const (
 	ContextKeyUserObj = "authedUserObj"
-	LOGIN_CODE = "login_code"
+	DefaultAvatarUrl  = "/public/static/image/default-avatar.png"
 )

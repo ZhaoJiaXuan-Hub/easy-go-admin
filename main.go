@@ -8,6 +8,7 @@ import (
 	"easy-go-admin/config/redis"
 	"easy-go-admin/config/router"
 	_ "easy-go-admin/docs"
+	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -33,7 +34,7 @@ func main() {
 	}
 
 	go func() {
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			Log.Info("监听端口:", err)
 		}
 		Log.Info("监听端口:", config.Config.Server.Address)

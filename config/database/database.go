@@ -37,7 +37,7 @@ func InitDB() error {
 	sqlDB.SetMaxIdleConns(dbConfig.MaxIdle)
 	sqlDB.SetMaxOpenConns(dbConfig.MaxOpen)
 	// 执行迁移
-	err = Db.AutoMigrate(&entity.SystemRole{}, &entity.SystemAccount{})
+	err = Db.AutoMigrate(&entity.SystemRole{}, &entity.SystemAccount{}, &entity.SystemDictData{}, &entity.SystemDict{}, &entity.SystemMenu{}, &entity.SystemDept{})
 	if err != nil {
 		panic(err)
 	}

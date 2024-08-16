@@ -8,9 +8,9 @@ database:
   dialects: mysql
   host: 127.0.0.1
   port: 3306
-  db: easy
+  db: admin
   username: root
-  password: Xx123456
+  password: root
   charset: utf8
   maxIdle: 50 # 最大空闲
   maxOpen: 150 # 最大连接

@@ -22,8 +22,10 @@ const TokenExpireDuration = time.Hour * 2
 const Secret = "easyadmin"
 
 var (
-	ErrAbsent  = "令牌不存在"
-	ErrInvalid = "令牌无效"
+	ErrAbsent      = "令牌不存在"
+	ErrInvalid     = "令牌无效"
+	ErrExpired     = "令牌已过期"
+	ErrNotValidYet = "令牌尚未生效"
 )
 
 // GenerateTokenByAdmin 生成用户token
@@ -51,23 +53,30 @@ func ValidateToken(tokenString string) (*entity.JwtSystemAccountData, error) {
 	if len(tokenString) == 0 {
 		return nil, errors.New(ErrAbsent)
 	}
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte(Secret), nil
-	})
-	if token == nil {
-		return nil, errors.New(ErrInvalid)
-	}
+
 	claims := userStdClaims{}
-	_, err = jwt.ParseWithClaims(tokenString, &claims, func(token *jwt.Token) (interface{}, error) {
+	_, err := jwt.ParseWithClaims(tokenString, &claims, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return Secret, nil
+		return []byte(Secret), nil
 	})
+
 	if err != nil {
+		if ve, ok := err.(*jwt.ValidationError); ok {
+			switch {
+			case ve.Errors == jwt.ValidationErrorExpired:
+				return nil, errors.New(ErrExpired)
+			case ve.Errors == jwt.ValidationErrorNotValidYet:
+				return nil, errors.New(ErrNotValidYet)
+			default:
+				return nil, errors.New(ErrInvalid)
+			}
+		}
 		return nil, err
 	}
-	return &claims.JwtSystemAccountData, err
+
+	return &claims.JwtSystemAccountData, nil
 }
 
 // GetAccountID 返回用户id
@@ -76,9 +85,25 @@ func GetAccountID(c *gin.Context) (uint, error) {
 	if !exist {
 		return 0, errors.New("未找到id")
 	}
-	admin, ok := u.(entity.JwtSystemAccountData)
+	admin, ok := u.(entity.SystemAccount)
 	if !ok {
-		return admin.Id, nil
+		return admin.ID, nil
 	}
 	return 0, errors.New("未找到id")
+}
+
+// GetAccountInfo 返回用户信息
+func GetAccountInfo(c *gin.Context) (*entity.JwtSystemAccountData, error) {
+	u, exist := c.Get(constant.ContextKeyUserObj)
+	if !exist {
+		return nil, errors.New("未找到用户")
+	}
+
+	// 确保从上下文中获取的数据类型是 *entity.JwtSystemAccountData
+	admin, ok := u.(*entity.JwtSystemAccountData)
+	if !ok {
+		return nil, errors.New("类型错误：未找到正确的用户对象")
+	}
+
+	return admin, nil
 }
