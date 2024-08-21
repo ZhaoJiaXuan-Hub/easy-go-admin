@@ -38,9 +38,10 @@ type SystemMenu struct {
 	UpdatedAt  util.Htime     `gorm:"comment:更新时间;type:datetime" json:"updated_at"`
 }
 
-// SystemMenuCreateData 创建结构体
-type SystemMenuCreateData struct {
-	Title      string `json:"title"`
+// SystemMenuSaveData 创建结构体
+type SystemMenuSaveData struct {
+	ID         uint   `json:"id"`
+	Title      string `json:"title" validate:"required"`
 	AlwaysShow bool   `json:"alwaysShow"`
 	Breadcrumb bool   `json:"breadcrumb"`
 	Hidden     bool   `json:"hidden"`
@@ -60,7 +61,7 @@ type SystemMenuCreateData struct {
 
 // SystemMenuUpdateData 更新结构体
 type SystemMenuUpdateData struct {
-	ID         uint   `json:"id"`
+	ID         uint   `json:"id" validate:"required"`
 	Title      string `json:"title"`
 	AlwaysShow bool   `json:"alwaysShow"`
 	Breadcrumb bool   `json:"breadcrumb"`
@@ -81,7 +82,12 @@ type SystemMenuUpdateData struct {
 
 // SystemMenuDetailData 详情结构体
 type SystemMenuDetailData struct {
-	ID uint `json:"id"`
+	ID uint `form:"id" binding:"required"`
+}
+
+// SystemMenuDeleteData 删除结构体
+type SystemMenuDeleteData struct {
+	IDS []int `json:"ids" validate:"required"`
 }
 
 // AfterFind is a GORM callback that runs after the model is found.

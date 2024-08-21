@@ -10,19 +10,35 @@ import (
 
 type ISystemMenuService interface {
 	GetMenuTree(c *gin.Context)
-	Create(c *gin.Context, dto entity.SystemMenuCreateData)
+	Save(c *gin.Context, dto entity.SystemMenuSaveData)
+	Detail(c *gin.Context, dto entity.SystemMenuDetailData)
 }
 
 type SystemMenuServiceImpl struct{}
 
-func (s SystemMenuServiceImpl) Create(c *gin.Context, dto entity.SystemMenuCreateData) {
-	// 创建参数验证
+func (s SystemMenuServiceImpl) Detail(c *gin.Context, dto entity.SystemMenuDetailData) {
+	// 获取详情参数验证
 	err := Validate.New().Struct(dto)
 	if err != nil {
 		message.Fail(c, int(message.Code.BADREQUEST), message.Code.GetMessage(message.Code.BADREQUEST))
 		return
 	}
-	createData := entity.SystemMenu{
+	menu, err := dao.SystemMenuDetail(dto.ID)
+	if err != nil {
+		message.Fail(c, int(message.Code.FAILURE), err.Error())
+		return
+	}
+	message.Success(c, menu)
+}
+
+func (s SystemMenuServiceImpl) Save(c *gin.Context, dto entity.SystemMenuSaveData) {
+	// 保存参数验证
+	err := Validate.New().Struct(dto)
+	if err != nil {
+		message.Fail(c, int(message.Code.BADREQUEST), message.Code.GetMessage(message.Code.BADREQUEST))
+		return
+	}
+	saveData := entity.SystemMenu{
 		Title:      dto.Title,
 		AlwaysShow: dto.AlwaysShow,
 		Breadcrumb: dto.Breadcrumb,
@@ -40,9 +56,15 @@ func (s SystemMenuServiceImpl) Create(c *gin.Context, dto entity.SystemMenuCreat
 		Status:     dto.Status,
 		Path:       dto.Path,
 	}
-	err = dao.SystemMenuCreate(createData)
+	// 检查 id 是否为 0 来决定是创建还是更新
+	if dto.ID != 0 {
+		saveData.ID = dto.ID
+		err = dao.SystemMenuUpdate(saveData)
+	} else {
+		err = dao.SystemMenuCreate(saveData)
+	}
 	if err != nil {
-		message.Fail(c, int(message.Code.CREATERESOURCEFAILED), "创建菜单失败")
+		message.Fail(c, int(message.Code.CREATERESOURCEFAILED), err.Error())
 		return
 	}
 	message.Success(c, nil)

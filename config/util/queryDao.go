@@ -7,6 +7,14 @@ import (
 	"strings"
 )
 
+type QueryOption struct {
+	Where   interface{} `json:"where"`
+	Columns interface{} `json:"columns"`
+	OrderBy interface{} `json:"orderBy"`
+	Page    int         `json:"page"`
+	Rows    int         `json:"rows"`
+}
+
 // BuildWhere 构建where条件
 func BuildWhere(db *gorm.DB, where interface{}) (*gorm.DB, error) {
 	var err error

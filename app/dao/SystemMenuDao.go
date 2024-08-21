@@ -13,17 +13,16 @@ func SystemMenuAll() (systemMenus []entity.SystemMenu, err error) {
 }
 
 // SystemMenuQuery 通过条件进行筛选获取菜单
-func SystemMenuQuery(wheres interface{}, columns interface{}, orderBy interface{}, page, rows int, total *int64) (systemMenus []*entity.SystemMenu, err error) {
+func SystemMenuQuery(query util.QueryOption, total *int64) (systemMenus []*entity.SystemMenu, err error) {
 	db := database.Db
-
 	var model []*entity.SystemMenu
 	var mod entity.SystemMenu
-	db, err = util.BuildQueryList(db, wheres, columns, orderBy, page, rows)
+	db, err = util.BuildQueryList(db, query.Where, query.Columns, query.OrderBy, query.Page, query.Rows)
 	if err != nil {
 		return nil, err
 	}
 	err = db.Preload("RolesInfo").Find(&model).Error
-	db, err = util.BuildWhere(db, wheres)
+	db, err = util.BuildWhere(db, query.Where)
 
 	db = database.Db
 	db.Model(&mod).Count(total)

@@ -33,6 +33,7 @@ func SetupCommonRouter(base *gin.RouterGroup) {
 	systemMenu.Use(middleware.AuthMiddleware())
 	{
 		systemMenu.GET("/getMenuTree", controllerSystem.GetMenuTree)
-		systemMenu.POST("/create", controllerSystem.CreateMenu)
+		systemMenu.POST("/save", controllerSystem.SaveMenu)
+		systemMenu.GET("/detail", controllerSystem.GetMenuDetail)
 	}
 }

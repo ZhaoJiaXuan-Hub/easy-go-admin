@@ -14,7 +14,7 @@ type Structure struct {
 	NOTFOUND             uint
 	INTERNALSERVERERROR  uint
 	NOTIMPLEMENTED       uint
-	CREATERESOURCEFAILED uint // 添加创建资源失败状态
+	CREATERESOURCEFAILED uint
 	Message              map[uint]string
 }
 
