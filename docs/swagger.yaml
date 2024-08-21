@@ -1,0 +1,98 @@
+definitions:
+  entity.LoginData:
+    properties:
+      password:
+        type: string
+      user_name:
+        type: string
+    required:
+    - password
+    - user_name
+    type: object
+  entity.SystemAccountCreateData:
+    properties:
+      avatar:
+        type: string
+      email:
+        type: string
+      nick_name:
+        type: string
+      password:
+        type: string
+      user_name:
+        type: string
+    required:
+    - email
+    - nick_name
+    - password
+    - user_name
+    type: object
+  message.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: 后台管理系统api接口文档
+  title: easyAdmin后台管理系统
+  version: "1.0"
+paths:
+  /api/system/account/create:
+    post:
+      description: 后台创建管理员登陆接口
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/entity.SystemAccountCreateData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/message.Response'
+      summary: 创建管理员接口
+  /api/system/account/getDetail:
+    get:
+      description: 后台获取登录用户信息
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/message.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取登录用户信息
+  /api/system/account/login:
+    post:
+      description: 管理员后台登陆接口
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/entity.LoginData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/message.Response'
+      summary: 管理员登陆接口
+securityDefinitions:
+  ApikeyAuth:
+    in: header
+    name: jason
+    type: apiKey
+swagger: "2.0"

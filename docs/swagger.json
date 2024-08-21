@@ -1,0 +1,151 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "后台管理系统api接口文档",
+        "title": "easyAdmin后台管理系统",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/system/account/create": {
+            "post": {
+                "description": "后台创建管理员登陆接口",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "创建管理员接口",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.SystemAccountCreateData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/message.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/system/account/getDetail": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "后台获取登录用户信息",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "获取登录用户信息",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/message.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/system/account/login": {
+            "post": {
+                "description": "管理员后台登陆接口",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "管理员登陆接口",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.LoginData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/message.Response"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "entity.LoginData": {
+            "type": "object",
+            "required": [
+                "password",
+                "user_name"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "user_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.SystemAccountCreateData": {
+            "type": "object",
+            "required": [
+                "email",
+                "nick_name",
+                "password",
+                "user_name"
+            ],
+            "properties": {
+                "avatar": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "nick_name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "user_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "message.Response": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApikeyAuth": {
+            "type": "apiKey",
+            "name": "jason",
+            "in": "header"
+        }
+    }
+}
